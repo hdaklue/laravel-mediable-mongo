@@ -5,22 +5,23 @@ namespace Plank\Mediable;
 
 use Carbon\Carbon;
 use GuzzleHttp\Psr7\Utils;
-use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
+use Plank\Mediable\Helpers\File;
+use MongoDB\Laravel\Eloquent\Model;
+
+use Psr\Http\Message\StreamInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Database\Eloquent\Relations\Pivot;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Arr;
-use Plank\Mediable\Exceptions\MediaMoveException;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Plank\Mediable\Exceptions\MediaUrlException;
-use Plank\Mediable\Helpers\File;
-use Plank\Mediable\UrlGenerators\TemporaryUrlGeneratorInterface;
+use Illuminate\Database\Eloquent\Relations\Pivot;
+use Plank\Mediable\Exceptions\MediaMoveException;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Plank\Mediable\UrlGenerators\UrlGeneratorInterface;
-use Psr\Http\Message\StreamInterface;
+use Plank\Mediable\UrlGenerators\TemporaryUrlGeneratorInterface;
 
 /**
  * Media Model.
@@ -65,7 +66,8 @@ class Media extends Model
 
     const VARIANT_NAME_ORIGINAL = 'original';
 
-    protected $table = 'media';
+    protected $collection = 'media';
+    protected $connection = 'mongodb';
 
     protected $guarded = [
         'id',
