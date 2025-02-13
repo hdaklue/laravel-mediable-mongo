@@ -1,0 +1,7 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "phpdoc_trim": false,
+        "phpdoc_no_empty_return": false,
+    }
+}

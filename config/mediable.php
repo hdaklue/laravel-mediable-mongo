@@ -8,13 +8,13 @@ return [
      */
     'connection_name' => null,
 
+
     /*
      * FQCN of the model to use for media
      *
      * Should extend `Plank\Mediable\Media`
      */
     'model' => Plank\Mediable\Media::class,
-    'mongodb_model'=> Plank\Mediable\MongoMedia::class,
 
     /*
      * Name to be used for mediables joining table

@@ -8,13 +8,13 @@ use GuzzleHttp\Psr7\Utils;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
+use MongoDB\Laravel\Eloquent\Model;
 use Plank\Mediable\Exceptions\MediaMoveException;
 use Plank\Mediable\Exceptions\MediaUrlException;
 use Plank\Mediable\Helpers\File;
@@ -102,21 +102,31 @@ class Media extends Model
         });
     }
 
-    /**
-     * Retrieve all associated models of given class.
-     * @param  string $class FQCN
-     * @return MorphToMany
-     */
-    public function models(string $class): MorphToMany
+    public function getConnection()
     {
-        return $this
-            ->morphedByMany(
-                $class,
-                'mediable',
-                config('mediable.mediables_table', 'mediables')
-            )
-            ->withPivot('tag', 'order');
+        return config('mediable.connection', 'mongodb');
     }
+
+    public function getTable()
+    {
+        return config('mediable.mediatable_table', 'plank_mediables');
+    }
+
+    // /**
+    //  * Retrieve all associated models of given class.
+    //  * @param  string $class FQCN
+    //  * @return MorphToMany
+    //  */
+    // public function models(string $class): MorphToMany
+    // {
+    //     return $this
+    //         ->morphedByMany(
+    //             $class,
+    //             'mediable',
+    //             config('mediable.mediables_table', 'mediables')
+    //         )
+    //         ->withPivot('tag', 'order');
+    // }
 
     /**
      * Relationship to variants derived from this file

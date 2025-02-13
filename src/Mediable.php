@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use MongoDB\Laravel\Relations\EmbedsMany;
 
 /**
  * Mediable Trait.
@@ -45,22 +46,27 @@ trait Mediable
         });
     }
 
-    /**
-     * Relationship for all attached media.
-     * @return MorphToMany
-     */
-    public function media(): MorphToMany
+    // /**
+    //  * Relationship for all attached media.
+    //  * @return MorphToMany
+    //  */
+    // public function media(): MorphToMany
+    // {
+    //     return $this
+    //         ->morphToMany(
+    //             config('mediable.model'),
+    //             'mediable',
+    //             config('mediable.mediables_table', 'mediables'),
+    //             'mediable_id',
+    //             config('mediable.mediables_table_related_key', 'media_id')
+    //         )
+    //         ->withPivot('tag', 'order')
+    //         ->orderBy('order');
+    // }
+
+    public function media(): EmbedsMany
     {
-        return $this
-            ->morphToMany(
-                config('mediable.model'),
-                'mediable',
-                config('mediable.mediables_table', 'mediables'),
-                'mediable_id',
-                config('mediable.mediables_table_related_key', 'media_id')
-            )
-            ->withPivot('tag', 'order')
-            ->orderBy('order');
+        return $this->embedsMany(config('mediable.model'))->orderBy('order');
     }
 
     /**

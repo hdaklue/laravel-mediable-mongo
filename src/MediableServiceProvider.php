@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Plank\Mediable;
@@ -23,19 +24,17 @@ class MediableServiceProvider extends ServiceProvider
 {
     /**
      * Boot the service provider.
-     *
-     * @return void
      */
     public function boot(): void
     {
-        if (!$this->app->runningInConsole()) {
+        if (! $this->app->runningInConsole()) {
             return;
         }
 
         $root = dirname(__DIR__);
         $this->publishes(
             [
-                $root . '/config/mediable.php' => config_path('mediable.php'),
+                $root.'/config/mediable.php' => config_path('mediable.php'),
             ],
             'config'
         );
@@ -45,13 +44,12 @@ class MediableServiceProvider extends ServiceProvider
         if (empty(glob($this->app->databasePath('migrations/*_create_mediable_tables.php')))) {
             $this->publishes(
                 [
-                    $root . '/migrations/2016_06_27_000000_create_mediable_tables.php' =>
-                        $this->app->databasePath(
-                            'migrations/' . date(
-                                'Y_m_d_His',
-                                $time
-                            ) . '_create_mediable_tables.php'
-                        )
+                    $root.'/migrations/2016_06_27_000000_create_mediable_tables.php' => $this->app->databasePath(
+                        'migrations/'.date(
+                            'Y_m_d_His',
+                            $time
+                        ).'_create_mediable_tables.php'
+                    ),
                 ],
                 'mediable-migrations'
             );
@@ -60,13 +58,12 @@ class MediableServiceProvider extends ServiceProvider
         if (empty(glob($this->app->databasePath('migrations/*_add_variants_to_media.php')))) {
             $this->publishes(
                 [
-                    $root . '/migrations/2020_10_12_000000_add_variants_to_media.php' =>
-                        $this->app->databasePath(
-                            'migrations/' . date(
-                                'Y_m_d_His',
-                                $time
-                            ) . '_add_variants_to_media.php'
-                        )
+                    $root.'/migrations/2020_10_12_000000_add_variants_to_media.php' => $this->app->databasePath(
+                        'migrations/'.date(
+                            'Y_m_d_His',
+                            $time
+                        ).'_add_variants_to_media.php'
+                    ),
                 ],
                 'mediable-migrations'
             );
@@ -76,32 +73,29 @@ class MediableServiceProvider extends ServiceProvider
         if (empty(glob($this->app->databasePath('migrations/*_add_alt_to_media.php')))) {
             $this->publishes(
                 [
-                    $root . '/migrations/2024_03_30_000000_add_alt_to_media.php' =>
-                        $this->app->databasePath(
-                            'migrations/' . date(
-                                'Y_m_d_His',
-                                $time
-                            ) . '_add_alt_to_media.php'
-                        ),
+                    $root.'/migrations/2024_03_30_000000_add_alt_to_media.php' => $this->app->databasePath(
+                        'migrations/'.date(
+                            'Y_m_d_His',
+                            $time
+                        ).'_add_alt_to_media.php'
+                    ),
                 ],
                 'mediable-migrations'
             );
         }
 
-        if (!config('mediable.ignore_migrations', false)) {
-            $this->loadMigrationsFrom($root . '/migrations');
+        if (! config('mediable.ignore_migrations', false)) {
+            $this->loadMigrationsFrom($root.'/migrations');
         }
     }
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register(): void
     {
         $this->mergeConfigFrom(
-            dirname(__DIR__) . '/config/mediable.php',
+            dirname(__DIR__).'/config/mediable.php',
             'mediable'
         );
 
@@ -117,7 +111,6 @@ class MediableServiceProvider extends ServiceProvider
      * Bind an instance of the Source Adapter Factory to the container.
      *
      * Attaches the default adapter types
-     * @return void
      */
     public function registerSourceAdapterFactory(): void
     {
@@ -141,7 +134,6 @@ class MediableServiceProvider extends ServiceProvider
 
     /**
      * Bind the Media Uploader to the container.
-     * @return void
      */
     public function registerUploader(): void
     {
@@ -155,20 +147,10 @@ class MediableServiceProvider extends ServiceProvider
         });
         $this->app->alias('mediable.uploader', MediaUploader::class);
 
-        $this->app->bind('mongo.mediable.uploader', function (Container $app) {
-            return new MongoMediaUploader(
-                $app['filesystem'],
-                $app['mediable.source.factory'],
-                $app[ImageManipulator::class],
-                $app['config']->get('mediable')
-            );
-        });
-        $this->app->alias('mongo.mediable.uploader', MongoMediaUploader::class);
     }
 
     /**
      * Bind the Media Uploader to the container.
-     * @return void
      */
     public function registerMover(): void
     {
@@ -180,7 +162,6 @@ class MediableServiceProvider extends ServiceProvider
 
     /**
      * Bind the Media Uploader to the container.
-     * @return void
      */
     public function registerUrlGeneratorFactory(): void
     {
@@ -210,7 +191,6 @@ class MediableServiceProvider extends ServiceProvider
 
     /**
      * Add package commands to artisan console.
-     * @return void
      */
     public function registerConsoleCommands(): void
     {
@@ -237,7 +217,7 @@ class MediableServiceProvider extends ServiceProvider
             if (class_exists(\Intervention\Image\Drivers\Imagick\Driver::class)) {
                 // intervention/image >=3.0
                 $imageManager = new ImageManager(
-                    new \Intervention\Image\Drivers\Imagick\Driver()
+                    new \Intervention\Image\Drivers\Imagick\Driver
                 );
             } else {
                 // intervention/image <3.0
@@ -248,7 +228,7 @@ class MediableServiceProvider extends ServiceProvider
             if (class_exists(\Intervention\Image\Drivers\Gd\Driver::class)) {
                 // intervention/image >=3.0
                 $imageManager = new ImageManager(
-                    new \Intervention\Image\Drivers\Gd\Driver()
+                    new \Intervention\Image\Drivers\Gd\Driver
                 );
             } else {
                 // intervention/image <3.0
