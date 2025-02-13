@@ -44,6 +44,26 @@ class MongoMediaUploader extends MediaUploader
         return $model;
     }
 
+    private function populateModel(MongoMedia $model): MongoMedia
+    {
+        $model->size = $this->verifyFileSize($this->source->size() ?? 0);
+        $model->mime_type = $this->verifyMimeType($this->selectMimeType());
+        $model->extension = $this->verifyExtension(
+            $this->source->extension()
+                ?? File::guessExtension($model->mime_type)
+        );
+        $model->aggregate_type = $this->inferAggregateType($model->mime_type, $model->extension);
+
+        $model->disk = $this->disk ?: $this->config['default_disk'];
+        $model->directory = $this->directory;
+        $model->filename = $this->generateFilename();
+
+        if ($this->alt) {
+            $model->alt = $this->alt;
+        }
+
+        return $model;
+    }
        /**
      * Generate an instance of the `Media` class.
      * @return MongoMedia
