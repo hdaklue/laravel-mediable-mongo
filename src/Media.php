@@ -65,7 +65,7 @@ class Media extends Model
 
     const VARIANT_NAME_ORIGINAL = 'original';
 
-    protected $table = 'media';
+    protected $collection = 'media';
 
     protected $connection = 'mongodb';
 

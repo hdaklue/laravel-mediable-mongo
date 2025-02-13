@@ -6,7 +6,7 @@ return [
      *
      * Set to `null` in order to use the default database connection
      */
-    'connection_name' => null,
+    'connection_name' => 'mongodb',
 
 
     /*
