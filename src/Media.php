@@ -67,6 +67,8 @@ class Media extends Model
 
     protected $table = 'media';
 
+    protected $connection = 'mongodb';
+
     protected $guarded = [
         'id',
         'disk',
@@ -100,16 +102,6 @@ class Media extends Model
         static::deleted(function (Media $media) {
             $media->handleMediaDeletion();
         });
-    }
-
-    public function getConnection()
-    {
-        return config('mediable.connection', 'mongodb');
-    }
-
-    public function getTable()
-    {
-        return config('mediable.mediatable_table', 'plank_mediables');
     }
 
     // /**
