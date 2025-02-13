@@ -14,6 +14,7 @@ return [
      * Should extend `Plank\Mediable\Media`
      */
     'model' => Plank\Mediable\Media::class,
+    'mongodb_model'=> Plank\Mediable\MongoMedia::class,
 
     /*
      * Name to be used for mediables joining table
