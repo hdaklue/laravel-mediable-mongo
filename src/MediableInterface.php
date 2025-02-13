@@ -5,6 +5,7 @@ namespace Plank\Mediable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use MongoDB\Laravel\Relations\EmbedsMany;
 
 /**
  * @property Collection<Media> $media
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  */
 interface MediableInterface
 {
-    public function media(): MorphToMany;
+    public function media(): EmbedsMany;
 
     /**
      * @param Builder $q
