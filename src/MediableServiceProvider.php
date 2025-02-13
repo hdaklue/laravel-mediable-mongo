@@ -156,14 +156,14 @@ class MediableServiceProvider extends ServiceProvider
         $this->app->alias('mediable.uploader', MediaUploader::class);
 
         $this->app->bind('mongo.mediable.uploader', function (Container $app) {
-            return new MediaUploader(
+            return new MongoMediaUploader(
                 $app['filesystem'],
                 $app['mediable.source.factory'],
                 $app[ImageManipulator::class],
                 $app['config']->get('mediable')
             );
         });
-        $this->app->alias('mongo.mediable.uploader', MediaUploader::class);
+        $this->app->alias('mongo.mediable.uploader', MongoMediaUploader::class);
     }
 
     /**
