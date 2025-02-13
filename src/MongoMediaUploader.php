@@ -2,6 +2,7 @@
 
 namespace Plank\Mediable;
 
+use Plank\Mediable\Helpers\File;
 use Plank\Mediable\Exceptions\MediaUpload\FileSizeException;
 use Plank\Mediable\Exceptions\MediaUpload\FileExistsException;
 use Plank\Mediable\Exceptions\MediaUpload\InvalidHashException;
@@ -44,7 +45,17 @@ class MongoMediaUploader extends MediaUploader
         return $model;
     }
 
-    private function populateModel(MongoMedia $model): MongoMedia
+     /**
+     * Validate input and convert to Media attributes
+     * @param  MongoMedia $model
+     * @return MongoMedia
+     *
+     * @throws ConfigurationException
+     * @throws FileNotFoundException
+     * @throws FileNotSupportedException
+     * @throws FileSizeException
+     */
+    protected function populateModel(MongoMedia $model): MongoMedia
     {
         $model->size = $this->verifyFileSize($this->source->size() ?? 0);
         $model->mime_type = $this->verifyMimeType($this->selectMimeType());
@@ -64,11 +75,13 @@ class MongoMediaUploader extends MediaUploader
 
         return $model;
     }
+
+
        /**
      * Generate an instance of the `Media` class.
      * @return MongoMedia
      */
-    private function makeModel(): MongoMedia
+    protected function makeModel(): MongoMedia
     {
         $class = $this->config['mongo_model'] ?? MongoMedia::class;
 

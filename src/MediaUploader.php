@@ -667,7 +667,7 @@ class MediaUploader
      * @throws FileNotSupportedException
      * @throws FileSizeException
      */
-    private function populateModel(Media $model): Media
+    protected function populateModel(Media $model): Media
     {
         $model->size = $this->verifyFileSize($this->source->size() ?? 0);
         $model->mime_type = $this->verifyMimeType($this->selectMimeType());
@@ -831,7 +831,7 @@ class MediaUploader
      * Generate an instance of the `Media` class.
      * @return Media
      */
-    private function makeModel(): Media
+    protected function makeModel(): Media
     {
         $class = $this->config['model'] ?? Media::class;
 
@@ -845,7 +845,7 @@ class MediaUploader
      * @throws ConfigurationException If the disk does not exist
      * @throws ForbiddenException If the disk is not included in the `allowed_disks` config.
      */
-    private function verifyDisk(string $disk): string
+    protected function verifyDisk(string $disk): string
     {
         if (!array_key_exists($disk, config('filesystems.disks', []))) {
             throw ConfigurationException::diskNotFound($disk);
@@ -864,14 +864,14 @@ class MediaUploader
      * @throws ConfigurationException If no source is provided
      * @throws FileNotFoundException If the source is invalid
      */
-    private function verifySource(): void
+    protected function verifySource(): void
     {
         if (empty($this->source)) {
             throw ConfigurationException::noSourceProvided();
         }
     }
 
-    private function inferMimeType(Filesystem $filesystem, string $path): string
+    protected function inferMimeType(Filesystem $filesystem, string $path): string
     {
         $mimeType = null;
         try {
@@ -886,7 +886,7 @@ class MediaUploader
         return $mimeType ?: 'application/octet-stream';
     }
 
-    private function selectMimeType(): string
+    protected function selectMimeType(): string
     {
         if ($this->config['prefer_client_mime_type'] ?? false) {
             return $this->source->clientMimeType() ?? $this->source->mimeType();
@@ -900,7 +900,7 @@ class MediaUploader
      * @return string
      * @throws FileNotSupportedException If the mime type is not allowed
      */
-    private function verifyMimeType(string $mimeType): string
+    protected function verifyMimeType(string $mimeType): string
     {
         $mimeType = strtolower($mimeType);
         $allowed = $this->config['allowed_mime_types'] ?? [];
@@ -918,7 +918,7 @@ class MediaUploader
      * @return string
      * @throws FileNotSupportedException If the file extension is not allowed
      */
-    private function verifyExtension(string $extension, bool $toLower = true): string
+    protected function verifyExtension(string $extension, bool $toLower = true): string
     {
         $extensionLower = strtolower($extension);
         $allowed = $this->config['allowed_extensions'] ?? [];
@@ -935,7 +935,7 @@ class MediaUploader
      * @return int
      * @throws FileSizeException If the file is too large
      */
-    private function verifyFileSize(int $size): int
+    protected function verifyFileSize(int $size): int
     {
         $max = $this->config['max_size'] ?? 0;
         if ($max > 0 && $size > $max) {
@@ -945,7 +945,7 @@ class MediaUploader
         return $size;
     }
 
-    private function verifyHashes(): void
+    protected function verifyHashes(): void
     {
         foreach ($this->expectedHashes as $algo => $expectedHash) {
             if ($expectedHash === null) {
@@ -970,7 +970,7 @@ class MediaUploader
      *
      * @throws FileExistsException
      */
-    private function verifyDestination(Media $model): void
+    protected function verifyDestination(Media $model): void
     {
         $storage = $this->filesystem->disk($model->disk);
 
@@ -986,7 +986,7 @@ class MediaUploader
      * @return Media
      * @throws FileExistsException If directory is not writable or file already exists at the destination and on_duplicate is set to 'error'
      */
-    private function handleDuplicate(Media $model): Media
+    protected function handleDuplicate(Media $model): Media
     {
         switch ($this->config['on_duplicate'] ?? MediaUploader::ON_DUPLICATE_INCREMENT) {
             case static::ON_DUPLICATE_ERROR:
@@ -1023,7 +1023,7 @@ class MediaUploader
      * @param  bool $withVariants
      * @return void
      */
-    private function deleteExistingMedia(Media $model, bool $withVariants = false): void
+    protected function deleteExistingMedia(Media $model, bool $withVariants = false): void
     {
         $original = $model->newQuery()
             ->where('disk', $model->disk)
@@ -1047,7 +1047,7 @@ class MediaUploader
      * @param  Media $model
      * @return void
      */
-    private function deleteExistingFile(Media $model): void
+    protected function deleteExistingFile(Media $model): void
     {
         $this->filesystem->disk($model->disk)->delete($model->getDiskPath());
     }
@@ -1057,7 +1057,7 @@ class MediaUploader
      * @param  Media $model
      * @return string
      */
-    private function generateUniqueFilename(Media $model): string
+    protected function generateUniqueFilename(Media $model): string
     {
         $storage = $this->filesystem->disk($model->disk);
         $counter = 0;
@@ -1077,7 +1077,7 @@ class MediaUploader
      * Generate the model's filename.
      * @return string
      */
-    private function generateFilename(): string
+    protected function generateFilename(): string
     {
         if ($this->filename) {
             return $this->filename;
@@ -1096,7 +1096,7 @@ class MediaUploader
         return File::sanitizeFileName($filename);
     }
 
-    private function writeToDisk(Media $model): void
+    protected function writeToDisk(Media $model): void
     {
         $this->filesystem->disk($model->disk)
             ->put(
